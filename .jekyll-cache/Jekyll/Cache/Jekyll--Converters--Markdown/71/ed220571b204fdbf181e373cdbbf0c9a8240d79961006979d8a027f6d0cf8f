@@ -1,0 +1,68 @@
+I"�<!-- TOC -->
+
+<ul>
+  <li><a href="#%e5%bc%b1%e7%9b%91%e7%9d%a3%e6%96%87%e6%9c%ac%e5%88%86%e7%b1%bbsnorkel%e5%ad%a6%e4%b9%a0"><strong>弱监督文本分类snorkel学习</strong></a>
+    <ul>
+      <li><a href="#tutorial">Tutorial</a>
+        <ul>
+          <li><a href="#1%e5%8a%a0%e8%bd%bd%e6%95%b0%e6%8d%ae-load-data">1、加载数据 load data</a></li>
+          <li><a href="#2%e7%bc%96%e5%86%99%e6%a0%87%e8%ae%b0%e5%87%bd%e6%95%b0-lfs">2、编写标记函数 LFs</a></li>
+          <li><a href="#3%e6%a0%87%e8%ae%b0%e6%a8%a1%e5%9e%8b%e7%bb%84%e5%90%88%e6%a0%87%e8%ae%b0%e5%87%bd%e6%95%b0%e7%9a%84%e8%be%93%e5%87%ba">3、标记模型组合标记函数的输出</a></li>
+          <li><a href="#4%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8b">4、训练模型</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<!-- /TOC -->
+
+<h2 id="弱监督文本分类snorkel学习"><strong>弱监督文本分类snorkel学习</strong></h2>
+
+<h3 id="tutorial">Tutorial</h3>
+<h4 id="1加载数据-load-data">1、加载数据 load data</h4>
+<p>数据切分</p>
+<ul>
+  <li><strong>Training set</strong>：没有真实标签，弱监督生产的标签</li>
+  <li><strong>Development set</strong>：专家经验标注的小样本数据（100~500条），用于指导标记函数的开发</li>
+  <li><strong>Validation set</strong>：小数据集用于分类器的调参</li>
+  <li><strong>Test set</strong>：最后分类模型的评估
+    <h4 id="2编写标记函数-lfs">2、编写标记函数 LFs</h4>
+    <p>Labeling functions特点：启发式方法标记的数据有噪音，而且不能覆盖每一个样本，甚至针对统一个样本标记函数产生的标签可能有重叠或者冲突。</p>
+    <blockquote>
+      <p><strong>LFs样例</strong>：</p>
+      <ul>
+        <li>关键词或者词典（specific words）</li>
+        <li>模式匹配（specific syntactical pattern）</li>
+        <li>预训练模型</li>
+        <li>远程监督：外部数据库或者知识图谱</li>
+        <li>众包标签集</li>
+      </ul>
+
+      <p><strong>实战</strong>：
+1、观察分析样本，generate idea for LFs
+2、编写初始LF
+3、检查LF对未标注样本的表现
+4、Refine and Debug 提高覆盖度或者精确度</p>
+
+      <p><strong>LF评测</strong></p>
+      <ul>
+        <li>Polarity: The set of unique labels this LF outputs (excluding abstains)</li>
+        <li>Coverage: The fraction of the dataset the LF labels</li>
+        <li>Overlaps: The fraction of the dataset where this LF and at least one other LF label</li>
+        <li>Conflicts: The fraction of the dataset where this LF and at least one other LF label and disagree</li>
+        <li>Correct: The number of data points this LF labels correctly (if gold labels are provided)</li>
+        <li>Incorrect: The number of data points this LF labels incorrectly (if gold labels are provided)</li>
+        <li>Empirical Accuracy: The empirical accuracy of this LF (if gold labels are provided)
+          <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">snorkel.labeling</span> <span class="kn">import</span> <span class="n">LFAnalysis</span>
+<span class="n">LFAnalysis</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L_train</span><span class="p">,</span> <span class="n">lfs</span><span class="o">=</span><span class="n">lfs</span><span class="p">)</span><span class="o">.</span><span class="n">lf_summary</span><span class="p">()</span>
+</code></pre></div>          </div>
+          <h4 id="3标记模型组合标记函数的输出">3、标记模型组合标记函数的输出</h4>
+          <h4 id="4训练模型">4、训练模型</h4>
+        </li>
+      </ul>
+    </blockquote>
+  </li>
+</ul>
+
+:ET
